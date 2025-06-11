@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuttle Sign Up</title>
+
+    <style>
+        .container {
+            display: inline-block;
+        }
+
+        .table-seating {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-seating th,
+        .table-seating td {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+        }
+
+        .time-section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 16px;
+        }
+
+        /* Force switch to 1x4 on small screens */
+        @media (max-width: 1040px) {
+        .table-grid {
+            grid-template-columns: 1fr;
+        }
+        }
+
+        .table-seating {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="signup-container" class="time-section-grid"></div>
+
+    <script type="module" src="./scripts/schedule.js"></script>
+
+</body>
+
+</html>
