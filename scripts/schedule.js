@@ -1,5 +1,6 @@
 import { dualParser as parser } from "./utils/DataParser.js";
 import Time from "./utils/Time.js";
+import { myRegistry } from "./models/RegistrationLocal.js";
 
 let departure = [];
 

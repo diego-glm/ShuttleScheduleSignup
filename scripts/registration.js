@@ -1,3 +1,4 @@
+import { myRegistry } from "./models/RegistrationLocal.js";
 
 function main(params) {
     generateRoomOptions()
@@ -32,7 +33,7 @@ function handleSubmitBtn() {
           const lastName = document.getElementById("lastName").value;
           const phoneNumber = document.getElementById("phoneNumber").value;
           
-          
+          myRegistry.add(roomNumber, lastName, phoneNumber);
         });
       });
 }
