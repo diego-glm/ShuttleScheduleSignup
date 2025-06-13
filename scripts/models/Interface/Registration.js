@@ -14,11 +14,11 @@ export default class Registration {
     registry = new Map();
     
     async load() {
-        throw new NotImplemented();
+        throw new NotImplemented('load');
     }
     
     async save() {
-        throw new NotImplemented();
+        throw new NotImplemented('save');
     }
     
     async clear() {
@@ -95,8 +95,8 @@ class RoomNotFoundError extends Error {
 }
 
 class NotImplemented extends Error {
-    constructor(parameters) {
-        super('This function is not implemented');
+    constructor(funName) {
+        super(`This ${funName} is not implemented`);
         this.name = 'MethodNotImplemented';
     }
 }
