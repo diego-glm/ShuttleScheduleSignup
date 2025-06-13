@@ -2,6 +2,7 @@ import { dualParser as parser } from "./utils/DataParser.js";
 import Time from "./utils/Time.js";
 import { myRegistry } from "./models/RegistrationLocal.js";
 
+const userRoom = Number(localStorage.getItem('user-room'));
 let departure = [];
 
 function main(params) {
@@ -31,14 +32,15 @@ function main(params) {
     });
     
     renderSignUpTables();
+    
+    
 }
 
 
 function renderSignUpTables() {
     let signupHTML = '';
     
-    for (let t = 0; t < departure.length; t++) { //departure.length
-        
+    for (let t = 0; t < departure.length; t++) {
         signupHTML += /*html*/`
         <form action="/action.php" method="post" class="container">
         <h2>Departure Time: ${departure[t].standardTimeString()} To ${departure[t].location}</h2>
@@ -58,6 +60,10 @@ function renderSignUpTables() {
     document.getElementById('signup-container').innerHTML = signupHTML;
 }
 
+/**
+ * @param {Time} time 
+ * @returns {string}
+ */
 function generateSignUpRow(time) {
     let rowsHTML = '';
     for (let i = 1; i <= 10; i++) {
@@ -67,8 +73,7 @@ function generateSignUpRow(time) {
                 ${i}
             </td>
             <td>
-                <input type="checkbox" id="checkmark-D${time}-Seat${i}">
-                
+                <input type="checkbox" id="checkmark-${time.time}-Seat${i}">
             </td>
             <td>
                 

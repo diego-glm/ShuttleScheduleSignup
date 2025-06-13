@@ -34,6 +34,7 @@ function handleSubmitBtn() {
           const phoneNumber = document.getElementById("phoneNumber").value;
           
           myRegistry.add(roomNumber, lastName, phoneNumber);
+          localStorage.setItem('user-room', roomNumber);
         });
       });
 }
