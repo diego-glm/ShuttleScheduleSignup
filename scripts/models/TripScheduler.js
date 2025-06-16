@@ -24,11 +24,11 @@ class TripScheduler {
         
     }
     
-    add(time, direction, locaiton, group) {
+    add(time, direction, location, group) {
         
     }
     
-    get(time) {
+    get(tripTime) {
         
     }
     

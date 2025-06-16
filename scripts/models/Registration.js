@@ -1,3 +1,5 @@
+import Storage from "./Interface/StorageHandler.js";
+
 class Guest {
     /**
      * @typedef {Object} params
@@ -12,13 +14,16 @@ class Guest {
 
 export default class Registration {
     registry = new Map();
+    /**@type {Storage} */
+    #storage = null;
     
-    async load() {
-        throw new NotImplemented('load');
-    }
-    
-    async save() {
-        throw new NotImplemented('save');
+    /**
+     * @param {Storage} storage 
+     */
+    constructor(storage) {
+        this.#storage = storage;
+        this.#storage.mapAddr = this.registry;
+        this.#storage.load();
     }
     
     async clear() {
