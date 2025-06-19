@@ -1,23 +1,20 @@
 
 export default class StorageHandler {
     /**@type {Map} */
-    mapAddr;
+    collectionAddr;
     
-    /**
-     * @param {string} data 
-     */
-    save(data) {
+    save() {
         throw new NotImplemented('save');
     }
     
     load() {
         throw new NotImplemented('save');
     }
-  }
-  
-  class NotImplemented extends Error {
+}
+
+class NotImplemented extends Error {
     constructor(funName) {
         super(`This ${funName} is not implemented`);
         this.name = 'MethodNotImplemented';
-    }
+    } 
 }

@@ -1,9 +1,12 @@
 import Storage from "./Interface/StorageHandler.js";
 
-export default class LocalStorage extends Storage {
+export default class LocalStorageMap extends Storage {
+    /**@type {string} */
     #localStorageKey;
+    /**@type {Map} */
+    collectionAddr;
     
-    constructor(localStorageKey = 'localStorage', map) {
+    constructor(localStorageKey) {
         super();
         this.#localStorageKey = localStorageKey;
     }
@@ -13,20 +16,20 @@ export default class LocalStorage extends Storage {
             const stored = localStorage.getItem(this.#localStorageKey);
             if (stored) {
                 const mapArray = JSON.parse(stored);
-                this.mapAddr.clear(); // optional, depends if you want to reset
+                this.collectionAddr.clear();
                 for (const [key, value] of mapArray) {
-                    this.mapAddr.set(key, value);
+                    this.collectionAddr.set(key, value);
                 }
             }
         } catch (error) {
             console.error('Failed to load from localStorage:', error);
-            this.mapAddr.clear();
+            this.collectionAddr.clear();
         }
     }
     
     save() {
         try {
-            const mapArray = Array.from(this.mapAddr.entries());
+            const mapArray = Array.from(this.collectionAddr.entries());
             localStorage.setItem(this.#localStorageKey, JSON.stringify(mapArray));
         } catch (error) {
             console.error('Failed to save to localStorage:', error);

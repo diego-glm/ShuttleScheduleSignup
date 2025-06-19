@@ -22,12 +22,13 @@ export default class Registration {
      */
     constructor(storage) {
         this.#storage = storage;
-        this.#storage.mapAddr = this.registry;
-        this.#storage.load();
+        this.#storage.collectionAddr = this.registry;
+        this.#load();
     }
     
     async clear() {
         this.registry.clear();
+        this.#save();
     }
 
     /**
@@ -39,6 +40,8 @@ export default class Registration {
         if (this.registry.get(room)) throw new RoomAlreadyExistsError(room);
         
         this.registry.set(room, new Guest({name, phone}));
+        
+        this.#save();
     }
 
     /** @param {number} room */
@@ -46,6 +49,8 @@ export default class Registration {
         if (!this.registry.get(room)) throw new RoomNotFoundError(room);
         
         this.registry.delete(room);
+
+        this.#save();
     }
     
     /**
@@ -57,6 +62,8 @@ export default class Registration {
         if (!this.registry.get(room)) throw new RoomNotFoundError(room);
         
         this.registry.set(room, new Guest({name, phone}))
+        
+        this.#save();
     }
     
     /** @param {number} room */
@@ -83,6 +90,14 @@ export default class Registration {
             console.log(`${room}: ${guest.name}, ${guest.phone}`);
         }
     }
+    
+    #load() {
+        this.#storage.load();
+    }
+    
+    #save() {
+        this.#storage.save();
+    }
 }
 
 class RoomAlreadyExistsError extends Error {
@@ -96,12 +111,5 @@ class RoomNotFoundError extends Error {
     constructor(room) {
         super(`Room ${room} not found`);
         this.name = 'RoomNotFoundError';
-    }
-}
-
-class NotImplemented extends Error {
-    constructor(funName) {
-        super(`This ${funName} is not implemented`);
-        this.name = 'MethodNotImplemented';
     }
 }

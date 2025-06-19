@@ -3,16 +3,18 @@ class Spot {
     /**@type {Spot} */
     next = null
     /**
-     * @param {number} id 
-     * @param {number} size 
+     * @param {number} room 
+     * @param {number} groupSize 
      */
-    constructor(id, size) {
-      this.id = id;
-      this.size = size;
+    constructor(room, groupSize) {
+      this.room = room;
+      this.groupSize = groupSize;
     }
 }
 
 export default class GroupList {
+    /**@type {number} */
+    #id;
     /**@type {Spot} */
     #head = null;
     /**@type {number} */
@@ -21,16 +23,16 @@ export default class GroupList {
     /**
      * @param {number} max 
      */
-    constructor(max = 10) {
+    constructor(max = 10, id) {
         this.#maxOccupancy = max;
     }
     
     /**
-     * @param {number} roomNumber 
+     * @param {number} room 
      * @param {number} groupSize 
      */
-    add(roomNumber, groupSize) {
-        const newSpot = new Spot(roomNumber, groupSize);
+    add(room, groupSize) {
+        const newSpot = new Spot(room, groupSize);
         
         if (this.#head !== null) {
             let current = this.#head;
@@ -44,11 +46,11 @@ export default class GroupList {
     }
     
     /**
-     * @param {number} roomNumber 
+     * @param {number} room 
      * @param {number} groupSegment 
      */
-    remove(roomNumber, newGroupSize) {
-        if (this.#head.roomNumber === roomNumber) {
+    remove(room, newGroupSize) {
+        if (this.#head.room === room) {
             if (newGroupSize === -1) {
                 this.#head = this.#head.next;
             } else {
@@ -56,11 +58,11 @@ export default class GroupList {
             }
         } else {
             let current = this.#head;
-            while (current.next && current.next.roomNumber !== roomNumber) {
+            while (current.next && current.next.room !== room) {
                 current = current.next;
             }
 
-            if (current.next && current.next.roomNumber === roomNumber) {
+            if (current.next && current.next.room === room) {
                 if (newGroupSize === -1) {
                     current.next = current.next.next;    
                 } else {
@@ -71,10 +73,10 @@ export default class GroupList {
     }
     
     /**
-     * @param {number} roomNumber 
+     * @param {number} room 
      */
-    removeAll(roomNumber) {
-        this.remove(roomNumber, -1);
+    removeAll(room) {
+        this.remove(room, -1);
     }
     
     /**
@@ -89,15 +91,46 @@ export default class GroupList {
         }
         return total;
     }
+    
+    getId() {
+        return this.#id;
+    }
 
     #spotsLeft() {
         return this.#maxOccupancy - this.occupancy();
     }
     
-    printList() {
+    toJSON() {
+        const spots = [];
         let current = this.#head;
         while (current) {
-        console.log(`Room ${current.roomNumber}, Group Size: ${current.groupSize}`);
+            spots.push({
+                room: current.room,
+                groupSize: current.groupSize
+            });
+            current = current.next;
+        }
+      
+        return {
+            id: this.#id,
+            maxOccupancy: this.#maxOccupancy,
+            spots
+        };
+    }
+    
+    static fromJSON(json) {
+        const data = typeof json === 'string' ? JSON.parse(json) : json;
+        const list = new GroupList(data.maxOccupancy, data.id);
+        for (const spot of data.spots) {
+            list.add(spot.room, spot.groupSize);
+        }
+        return list;
+    }
+    
+    print() {
+        let current = this.#head;
+        while (current) {
+        console.log(`Room ${current.room}, Group Size: ${current.groupSize}`);
         current = current.next;
         }
     }

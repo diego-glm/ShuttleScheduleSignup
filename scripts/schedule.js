@@ -1,6 +1,9 @@
 import { dualParser as parser } from "./utils/DataParser.js";
 import Time from "./utils/Time.js";
-import { myRegistry } from "./models/RegistrationLocal.js";
+import Registration from "./models/Registration.js";
+import Storage from './models/LocalStorageMap.js';
+
+const myRegistry = new Registration(new Storage('registration'));
 
 const userRoom = Number(localStorage.getItem('user-room'));
 let departure = [];

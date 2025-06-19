@@ -1,21 +1,20 @@
 export default class Time {
-    time;
-    location;
-    direction;
+    #time;
     
     /**
-     * @typedef {Object} params
-     * @property {string} time
-     * @property {string} location
+     * @param {string} militaryTimeStr 
      */
-    constructor(params) {
-        this.time = this.#militaryTimeStrToInt(params.time);
-        this.location = params.location;
+    constructor(militaryTimeStr) {
+        this.#time = this.#militaryTimeStrToInt(militaryTimeStr);
+    }
+    
+    int() {
+        return this.#time;
     }
     
     standardTimeString() {
-        const hours24 = Math.floor(this.time / 100);
-        const minutes = this.time % 100;
+        const hours24 = Math.floor(this.#time / 100);
+        const minutes = this.#time % 100;
         
         const hours12 = hours24 % 12 || 12;// 0 or 12 becomes 12 in 12-hour time
         const ampm = hours24 >= 12 ? 'PM' : 'AM';
@@ -24,8 +23,8 @@ export default class Time {
     }
     
     militaryTimeString() {
-        const hours = Math.floor(this.time / 100);
-        const minutes = this.time % 100;
+        const hours = Math.floor(this.#time / 100);
+        const minutes = this.#time % 100;
     
         return `${this.#pad(hours)}:${this.#pad(minutes)}`;
     }
