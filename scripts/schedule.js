@@ -1,7 +1,7 @@
 import { dualParser as parser } from "./utils/DataParser.js";
 import Time from "./utils/Time.js";
 import Registration from "./models/Registration.js";
-import Storage from './models/LocalStorageMap.js';
+import Storage from './models/LocalStorage.js';
 
 const myRegistry = new Registration(new Storage('registration'));
 

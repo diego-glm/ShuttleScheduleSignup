@@ -1,4 +1,4 @@
-import Storage from "./Interface/StorageHandler.js";
+import Storage from "./LocalStorage.js"
 
 class Guest {
     /**
@@ -22,7 +22,7 @@ export default class Registration {
      */
     constructor(storage) {
         this.#storage = storage;
-        this.#storage.collectionAddr = this.registry;
+        this.#storage.setOwner(this);
         this.#load();
     }
     
@@ -91,6 +91,23 @@ export default class Registration {
         }
     }
     
+    toJSON() {
+        return Array.from(this.registry.entries()).map(([room, guest]) => ({
+            room, guest: { ...guest }
+        }));
+    }
+    
+    static fromJSON(json) {
+        const data = typeof json === 'string' ? JSON.parse(json) : json;
+        const jsonRegistry = new Registration(new Storage('registration'));
+        
+        data.forEach(entry => {
+            jsonRegistry.add(entry.room, entry.guest.name, entry.guest.phone);
+        });
+        
+        return jsonRegistry;
+    }
+    
     #load() {
         this.#storage.load();
     }
@@ -112,4 +129,41 @@ class RoomNotFoundError extends Error {
         super(`Room ${room} not found`);
         this.name = 'RoomNotFoundError';
     }
+}
+
+export function test(params) {
+    console.log('start of test');
+    const myRegistry = new Registration(new Storage('registration'));
+    myRegistry.clear();
+    myRegistry.add(201, 'name', '615');
+    myRegistry.add(202, 'name2', '616');
+    myRegistry.print();
+}
+
+export function test1(params) {
+    const myRegistry = new Registration(new Storage('registration'));
+    myRegistry.clear();
+    myRegistry.add(201, 'name', '615');
+    myRegistry.add(202, 'name2', '616');
+    myRegistry.clear();
+    const plain = {...myRegistry};
+    
+    console.log(`Plain print: ${plain}`);
+    console.log(plain);
+    
+    const tojson = myRegistry.toJSON();
+    console.log(`toJSON: ${tojson}`);
+    console.log(tojson);
+    const fromjson = Registration.fromJSON(tojson);
+    console.log(`fromJSON: ${fromjson}`);
+    console.log({...fromjson});
+    
+    const areEqual = (a, b) =>
+        a instanceof Registration &&
+        b instanceof Registration &&
+        JSON.stringify(a) === JSON.stringify(b);
+    
+    console.log(areEqual(myRegistry, fromjson));
+    myRegistry.clear();
+    
 }

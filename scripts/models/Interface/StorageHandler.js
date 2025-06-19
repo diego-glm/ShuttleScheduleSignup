@@ -1,7 +1,7 @@
 
 export default class StorageHandler {
-    /**@type {Map} */
-    collectionAddr;
+    // owner class instant must have toJSON and fromJSON methods
+    owner;
     
     save() {
         throw new NotImplemented('save');

@@ -1,9 +1,11 @@
 import Registration from "./models/Registration.js";
-import Storage from './models/LocalStorageMap.js';
+import Storage from './models/LocalStorage.js';
+import {test} from './models/Registration.js';
 
 const myRegistry = new Registration(new Storage('registration'));
 
 function main(params) {
+    test();
     generateRoomOptions()
     handleSubmitBtn();
 }
