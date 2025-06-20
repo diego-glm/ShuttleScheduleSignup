@@ -1,15 +1,8 @@
-import { dualParser as parser } from "./utils/DataParser.js";
-import Time from "./utils/Time.js";
+import TripScheduler from './models/TripScheduler.js';
 import Registration from "./models/Registration.js";
 import Storage from './models/LocalStorage.js';
 
-const myRegistry = new Registration(new Storage('registration'));
-
-const userRoom = Number(localStorage.getItem('user-room'));
-let departure = [];
-
-function main(params) {
-    let timesDepartures = parser(`
+const DEPARTURE_TIMES = `
         15:30,DownTown
         16:30,DownTown
         17:30,DownTown
@@ -17,9 +10,8 @@ function main(params) {
         19:30,DownTown
         22:00,DownTown
         23:00,DownTown
-        24:00,DownTown
-    `);
-    let timesReturns = parser(`
+        24:00,DownTown`;
+const RETURN_TIMES = `
         15:00,DownTown
         16:00,DownTown
         17:00,DownTown
@@ -27,16 +19,16 @@ function main(params) {
         19:00,Opry Mills
         22:30,DownTown
         23:30,DownTown
-        24:30,DownTown
-    `);
-    
-    timesDepartures.forEach(e => {
-        departure.push(new Time({time:e.first, location: e.second}));
-    });
-    
+        24:30,DownTown`;
+
+const myRegistry = new Registration(new Storage('registration'));
+//myRegistry.print();
+const tripHandler = new TripScheduler(DEPARTURE_TIMES);
+
+const userRoom = Number(localStorage.getItem('user-room'));
+
+function main(params) {
     renderSignUpTables();
-    
-    
 }
 
 

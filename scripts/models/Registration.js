@@ -1,4 +1,4 @@
-import Storage from "./LocalStorage.js"
+import Storage from "./Interface/StorageHandler.js"
 
 class Guest {
     /**
@@ -28,7 +28,7 @@ export default class Registration {
     
     async clear() {
         this.registry.clear();
-        this.#save();
+        this.#reset();
     }
 
     /**
@@ -73,14 +73,17 @@ export default class Registration {
         return this.registry.get(room);
     }
     
+    /** @returns {number} */
     size() {
         return this.registry.size;
     }
     
+    /** @returns {Iterable<number>} */
     rooms() {
         return this.registry.keys();
     }
     
+    /** @returns {Iterable<Guest>} */
     entries() {
         return this.registry.entries();
     }
@@ -91,29 +94,34 @@ export default class Registration {
         }
     }
     
+    /** @returns {Object} A JSON-compatible object */
     toJSON() {
         return Array.from(this.registry.entries()).map(([room, guest]) => ({
             room, guest: { ...guest }
         }));
     }
     
-    static fromJSON(json) {
+    /** @param {string | Object} json - A JSON string or parsed object. */
+    fromJSON(json) {
         const data = typeof json === 'string' ? JSON.parse(json) : json;
-        const jsonRegistry = new Registration(new Storage('registration'));
-        
-        data.forEach(entry => {
-            jsonRegistry.add(entry.room, entry.guest.name, entry.guest.phone);
-        });
-        
-        return jsonRegistry;
-    }
-    
-    #load() {
-        this.#storage.load();
+        if (data) {
+            data.forEach(entry => {
+                this.add(entry.room, entry.guest.name, entry.guest.phone);
+            });
+        }
     }
     
     #save() {
         this.#storage.save();
+    }
+    
+    #load() {
+        const raw = this.#storage.load();
+        this.fromJSON(raw);
+    }
+    
+    #reset() {
+        this.#reset();
     }
 }
 
@@ -129,41 +137,4 @@ class RoomNotFoundError extends Error {
         super(`Room ${room} not found`);
         this.name = 'RoomNotFoundError';
     }
-}
-
-export function test(params) {
-    console.log('start of test');
-    const myRegistry = new Registration(new Storage('registration'));
-    myRegistry.clear();
-    myRegistry.add(201, 'name', '615');
-    myRegistry.add(202, 'name2', '616');
-    myRegistry.print();
-}
-
-export function test1(params) {
-    const myRegistry = new Registration(new Storage('registration'));
-    myRegistry.clear();
-    myRegistry.add(201, 'name', '615');
-    myRegistry.add(202, 'name2', '616');
-    myRegistry.clear();
-    const plain = {...myRegistry};
-    
-    console.log(`Plain print: ${plain}`);
-    console.log(plain);
-    
-    const tojson = myRegistry.toJSON();
-    console.log(`toJSON: ${tojson}`);
-    console.log(tojson);
-    const fromjson = Registration.fromJSON(tojson);
-    console.log(`fromJSON: ${fromjson}`);
-    console.log({...fromjson});
-    
-    const areEqual = (a, b) =>
-        a instanceof Registration &&
-        b instanceof Registration &&
-        JSON.stringify(a) === JSON.stringify(b);
-    
-    console.log(areEqual(myRegistry, fromjson));
-    myRegistry.clear();
-    
 }

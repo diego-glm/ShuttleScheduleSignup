@@ -3,12 +3,20 @@ export default class StorageHandler {
     // owner class instant must have toJSON and fromJSON methods
     owner;
     
+    setOwner(owner) {
+        this.owner = owner;
+    }
+    
     save() {
         throw new NotImplemented('save');
     }
     
     load() {
-        throw new NotImplemented('save');
+        throw new NotImplemented('load');
+    }
+    
+    reset() {
+        throw new NotImplemented('reset');
     }
 }
 

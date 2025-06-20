@@ -1,3 +1,4 @@
+import Storage from "./Interface/StorageHandler.js"
 
 class Spot {
     /**@type {Spot} */
@@ -13,18 +14,21 @@ class Spot {
 }
 
 export default class GroupList {
-    /**@type {number} */
-    #id;
     /**@type {Spot} */
     #head = null;
     /**@type {number} */
     #maxOccupancy;
+    /**@type {Storage} */
+    #storage = null;
     
     /**
      * @param {number} max 
+     * @param {Storage} storage 
      */
-    constructor(max = 10, id) {
+    constructor(max = 10, storage) {
         this.#maxOccupancy = max;
+        this.#storage = storage;
+        this.#storage.setOwner(this);
     }
     
     /**
@@ -43,6 +47,8 @@ export default class GroupList {
         } else {
             this.#head = newSpot;
         }
+        
+        this.#save();
     }
     
     /**
@@ -70,18 +76,22 @@ export default class GroupList {
                 }
             }
         }
+        
+        this.#save();
     }
     
-    /**
-     * @param {number} room 
-     */
+    /** @param {number} room */
     removeAll(room) {
         this.remove(room, -1);
+        this.#save;
     }
     
-    /**
-     * @returns {number} Total Occupancy in this list
-     */
+    clear() {
+        this.#head = null;
+        this.#reset();
+    }
+    
+    /** @returns {number} Total Occupancy in this list */
     occupancy() {
         let total = 0;
         let current = this.#head;
@@ -91,15 +101,20 @@ export default class GroupList {
         }
         return total;
     }
-    
-    getId() {
-        return this.#id;
-    }
 
     #spotsLeft() {
         return this.#maxOccupancy - this.occupancy();
     }
     
+    print() {
+        let current = this.#head;
+        while (current) {
+        console.log(`Room ${current.room}, Group Size: ${current.groupSize}`);
+        current = current.next;
+        }
+    }
+    
+    /** @returns {Object} A JSON-compatible object */
     toJSON() {
         const spots = [];
         let current = this.#head;
@@ -112,31 +127,32 @@ export default class GroupList {
         }
       
         return {
-            id: this.#id,
             maxOccupancy: this.#maxOccupancy,
             spots
         };
     }
     
-    static fromJSON(json) {
+    /** @param {string | Object} json - A JSON string or parsed object. */
+    fromJSON(json) {
         const data = typeof json === 'string' ? JSON.parse(json) : json;
-        const list = new GroupList(data.maxOccupancy, data.id);
         for (const spot of data.spots) {
-            list.add(spot.room, spot.groupSize);
+            this.add(spot.room, spot.groupSize);
         }
-        return list;
     }
     
-    print() {
-        let current = this.#head;
-        while (current) {
-        console.log(`Room ${current.room}, Group Size: ${current.groupSize}`);
-        current = current.next;
-        }
+    #save() {
+        this.#storage.save();
+    }
+    
+    #load() {
+        const raw = this.#storage.load();
+        this.fromJSON(raw);
+    }
+    
+    #reset() {
+        this.#storage.reset();
     }
 }
-
-
 
 class OccupancyExceeded extends Error {
     constructor(funName) {
