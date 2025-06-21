@@ -45,8 +45,12 @@ export default class TripScheduler {
         });
     }
     
-    add(time, group) {
-        
+    add(time, room, numOfppl) {
+        this.getGuestList(time).add(room, numOfppl);
+    }
+    
+    remove(time, room, numOfppl) {
+        this.getGuestList(time).remove(room, numOfppl);
     }
     
     /** @return {GroupList} */
