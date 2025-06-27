@@ -67,7 +67,7 @@ export default class Registration {
     }
     
     /** @param {number} room */
-    async get(room) {
+    get(room) {
         if (!this.registry.get(room)) throw new RoomNotFoundError(room);
         
         return this.registry.get(room);
@@ -121,7 +121,7 @@ export default class Registration {
     }
     
     #reset() {
-        this.#reset();
+        this.#storage.reset();
     }
 }
 

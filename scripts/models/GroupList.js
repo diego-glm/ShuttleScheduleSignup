@@ -86,6 +86,13 @@ export default class GroupList {
         this.#save;
     }
     
+    /**
+     * @returns {Spot}
+     */
+    getHead() {
+        return this.#head;
+    }
+    
     clear() {
         this.#head = null;
         this.#reset();

@@ -1,7 +1,7 @@
 import GroupList from "./GroupList.js";
 import Storage from "./LocalStorage.js";
 import Time from "../utils/Time.js";
-import { parser } from "../utils/DataParser.js";
+import { dualParser as parser } from "../utils/DataParser.js";
 
 const MAX_OCC = 10;
 
@@ -30,10 +30,10 @@ export default class TripScheduler {
     #trips = new Map(); // number:time -> GroupList
 
     /**
-     * @param {string} times Times followed by 
+     * @param {string} timeLoc Times followed by 
      */
     constructor(timeLoc) {
-        timeLocArr = parser(timeLoc);
+        let timeLocArr = parser(timeLoc);
         timeLocArr.forEach(e => {
             const time = new Time(e.first);
             const location = e.second;
@@ -45,22 +45,34 @@ export default class TripScheduler {
         });
     }
     
+    /**
+     * @param {number} time 
+     * @param {number} room 
+     * @param {number} numOfppl 
+     */
     add(time, room, numOfppl) {
         this.getGuestList(time).add(room, numOfppl);
     }
     
+    /**
+     * @param {number} time 
+     * @param {number} room 
+     * @param {number} numOfppl 
+     */
     remove(time, room, numOfppl) {
         this.getGuestList(time).remove(room, numOfppl);
     }
     
-    /** @return {GroupList} */
+    /**
+     * @param {number} time
+     * @return {GroupList} */
     getGuestList(time) {
         return this.#trips.get(time).group;
     }
     
     /** @returns {Array<{time: Time, location: string}>} */
     getTimesLocations() {
-        array = [];
+        let array = [];
         for (const [time, trip] of this.#trips.entries()) {
             array.push({time: trip.time, location: trip.location});
         }
