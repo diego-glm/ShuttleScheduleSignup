@@ -7,7 +7,7 @@ class Spot {
      * @param {number} room 
      * @param {number} groupSize 
      */
-    constructor(room, groupSize) {
+    constr uctor(room, groupSize) {
       this.room = room;
       this.groupSize = groupSize;
     }
