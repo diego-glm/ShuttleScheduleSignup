@@ -70,22 +70,24 @@ function renderSignUpTables() {
 function generateSignUpRow(time) {
     let rowsHTML = '';
     let group = tripHandler.getGuestList(time.int());
-    let current = group.getHead();
+    let current;
     let room, name;
     let sizeTracker, next = true;
     
     for (let i = 1; i <= 10; i++) {
-        if (current === null) {
-            room = '';
-            name = '';
-        } else {
-            if (next) {
-                room = current.room;
-                name = myRegistry.get(room).name;
-                sizeTracker = current.groupSize;
-                next = false;
-            } 
-        }
+        // if (current === null) {
+        //     room = '';
+        //     name = '';
+        // } else {
+        //     if (next) {
+        //         room = current.room;
+        //         name = myRegistry.get(room).name;
+        //         sizeTracker = current.groupSize;
+        //         next = false;
+        //     } 
+        // }
+        current = group.getStream();
+        room = current.room;
         
         rowsHTML += /*html*/`
         <tr>
@@ -100,10 +102,10 @@ function generateSignUpRow(time) {
             </td>
         </tr>`;
         
-        if (!next && --sizeTracker === 0) {
-            current = current.next;
-            next = true;
-        }
+        // if (!next && --sizeTracker === 0) {
+        //     current = current.next;
+        //     next = true;
+        // }
     }
     return rowsHTML;
 }

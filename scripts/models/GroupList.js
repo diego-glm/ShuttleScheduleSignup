@@ -7,7 +7,7 @@ class Spot {
      * @param {number} room 
      * @param {number} groupSize 
      */
-    constr uctor(room, groupSize) {
+    constructor(room, groupSize) {
       this.room = room;
       this.groupSize = groupSize;
     }
@@ -93,6 +93,13 @@ export default class GroupList {
         return this.#head;
     }
     
+    /**
+     * @returns {Generator<{room: number, name: string}>}
+     */
+    getStream() {
+        return streamList(this.#head);
+    }
+    
     clear() {
         this.#head = null;
         this.#reset();
@@ -158,6 +165,20 @@ export default class GroupList {
     
     #reset() {
         this.#storage.reset();
+    }
+}
+
+/**
+ * @param {Spot} head
+ * @returns {Generator<{room: number, name: string}>}
+ */
+function* streamList(head) {
+    let current = head;
+    while (current) {
+        for (let i = 0; i < current.groupSize; i++) {
+            yield current.room;
+        }
+        current = current.next;
     }
 }
 
