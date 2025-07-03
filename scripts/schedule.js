@@ -70,24 +70,27 @@ function renderSignUpTables() {
 function generateSignUpRow(time) {
     let rowsHTML = '';
     let group = tripHandler.getGuestList(time.int());
-    let current;
-    let room, name;
-    let sizeTracker, next = true;
+    let current = null;
     
-    for (let i = 1; i <= 10; i++) {
-        // if (current === null) {
-        //     room = '';
-        //     name = '';
-        // } else {
-        //     if (next) {
-        //         room = current.room;
-        //         name = myRegistry.get(room).name;
-        //         sizeTracker = current.groupSize;
-        //         next = false;
-        //     } 
-        // }
+    if (!group.isEmpty()) {
         current = group.getStream();
-        room = current.room;
+    }
+    for (let i = 1; i <= 10; i++) {
+        let room = '', name = '';
+        
+        if (current === null) {
+            room = '';
+            name = '';
+        } else {
+            let spot = current.next();
+            if (!spot.done) {
+                room = spot.value;
+                name = myRegistry.get(room).name;
+            } else {
+                room = '';
+                name = '';
+            }
+        }
         
         rowsHTML += /*html*/`
         <tr>
@@ -95,17 +98,12 @@ function generateSignUpRow(time) {
                 ${i}
             </td>
             <td>
-                ${current === null?'<input type="checkbox" id="checkmark-${time.int()}-Seat${i}">':''} <span>${room}</span>
+                ${room.length === 0?'<input type="checkbox" id="checkmark-${time.int()}-Seat${i}">':''} <span>${room}</span>
             </td>
             <td>
                 <p>${name}</p>
             </td>
         </tr>`;
-        
-        // if (!next && --sizeTracker === 0) {
-        //     current = current.next;
-        //     next = true;
-        // }
     }
     return rowsHTML;
 }

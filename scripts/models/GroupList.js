@@ -94,7 +94,7 @@ export default class GroupList {
     }
     
     /**
-     * @returns {Generator<{room: number, name: string}>}
+     * @returns {Generator<{room: number}>}
      */
     getStream() {
         return streamList(this.#head);
@@ -103,6 +103,10 @@ export default class GroupList {
     clear() {
         this.#head = null;
         this.#reset();
+    }
+    
+    isEmpty() {
+        return this.#head === null;
     }
     
     /** @returns {number} Total Occupancy in this list */
@@ -170,7 +174,7 @@ export default class GroupList {
 
 /**
  * @param {Spot} head
- * @returns {Generator<{room: number, name: string}>}
+ * @returns {Generator<{room: number}>}
  */
 function* streamList(head) {
     let current = head;
